@@ -1,0 +1,7 @@
+numpy==1.26.4
+# opencv-python==4.10.0.84
+# tritonclient[all]==2.53.0
+# scikit-image==0.25.0
+cuda-python==12.6.1  # Nên khớp với bản CUDA của container
+loguru==0.7.3
+python-dotenv

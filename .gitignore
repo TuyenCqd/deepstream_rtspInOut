@@ -1,0 +1,16 @@
+__pycache__
+*.pyc
+
+data_test
+root_alerts
+root_config
+nvdsinfer_custom_impl_Yolo/
+
+*.plan
+*.pt
+*.pth
+*.onnx
+*.engine
+*.trt
+*.log
+*.whl

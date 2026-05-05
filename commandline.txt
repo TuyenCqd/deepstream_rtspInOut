@@ -1,0 +1,20 @@
+# docker run
+ffmpeg -re -stream_loop -1 -fflags +genpts -i ./data_test/853889-hd_1920_1080_25fps.mp4 -c:v libx264 -preset superfast -tune zerolatency -an -f rtsp -rtsp_transport tcp rtsp://127.0.0.1:9111/mystream
+docker run --rm -it --network=host -e MTX_RTSPADDRESS=:9111 bluenviron/mediamtx
+docker run --rm -it -p 9111:9111 -p 8554:8554 -e MTX_RTSPADDRESS=:9111 bluenviron/mediamtx
+
+ffmpeg -re -stream_loop -1 -fflags +genpts -i data/data_sev/Dot\ nhap\ trai\ phep\ cong\ G3_nguoi\ di\ bo\ tu\ ngoai\ vao.avi -c:v libx264 -preset superfast -tune zerolatency -an -f rtsp rtsp://127.0.0.1:9111/mystream
+-fflags +genpts: Ép tạo lại timestamp mới liên tục, không bị nhảy lùi khi loop.
+-c:v libx264 -preset superfast: Mã hóa lại nhanh để đảm bảo luồng timestamp mượt (nếu CPU cho phép). Nếu muốn giữ -c copy, hãy đảm bảo MediaMTX hoặc DeepStream tự bù timestamp.
+
+export CAM_URIS="rtsp://127.0.0.1:9111/mystream1,rtsp://127.0.0.1:9111/mystream2,rtsp://127.0.0.1:9111/mystream3,rtsp://127.0.0.1:9111/mystream4,rtsp://127.0.0.1:9111/mystream5"
+export CAM_URIS="rtsp://127.0.0.1:9111/mystream"
+
+export CAM_IDS="cam_0"
+export CAM_IDS="cam_0,cam_1,cam_2,cam_3,cam_4"
+
+python3 service/pipeline.py --roi root_config/config_vung_gioi_han.txt 
+python3 service/pipeline.py --line root_config/config_vach_gioi_han.txt 
+python3 service/main.py --roi root_config/config_vung_gioi_han.txt 
+
+ffplay -rtsp_transport tcp rtsp://127.0.0.1:9112/ds-test

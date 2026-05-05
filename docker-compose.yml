@@ -1,0 +1,38 @@
+services:  
+  ds-management:
+    build: .
+    container_name: cctv_ds
+    
+    tty: true                  
+    stdin_open: true          
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia   
+              count: all
+              capabilities: [gpu]
+    ports:
+      - "9112:9112"
+      - "9113:9113"
+      - "5400:5400/udp"
+
+    volumes:
+      # - .:/workspace
+      - ../config:/workspace/root_config
+      - ../alerts:/workspace/root_alerts 
+      # Quan trọng: Tăng bộ nhớ ảo cho GPU (Shared Memory)
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    
+    shm_size: '4gb' 
+
+    environment:
+      - PYTHONPATH=/workspace
+      # - CAM_URIS=rtsp://admin:123456@192.168.1.10:554/stream1,rtsp://admin:123456@192.168.1.11:554/stream1
+      # - MODEL_DIR=/workspace/models
+      # - CONFIG_DIR=/workspace/config
+    
+    working_dir: /workspace    
+    restart: unless-stopped
+    # Lệnh chạy mặc định (Sửa main.py thành tên file chính của bạn)
+    # command: python3 main.py --roi root_config/config_vung_gioi_han.txt --line root_config/config_vach_gioi_han.txt
