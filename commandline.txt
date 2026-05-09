@@ -8,7 +8,7 @@ ffmpeg -re -stream_loop -1 -fflags +genpts -i data/data_sev/Dot\ nhap\ trai\ phe
 -c:v libx264 -preset superfast: Mã hóa lại nhanh để đảm bảo luồng timestamp mượt (nếu CPU cho phép). Nếu muốn giữ -c copy, hãy đảm bảo MediaMTX hoặc DeepStream tự bù timestamp.
 
 export CAM_URIS="rtsp://127.0.0.1:9111/mystream1,rtsp://127.0.0.1:9111/mystream2,rtsp://127.0.0.1:9111/mystream3,rtsp://127.0.0.1:9111/mystream4,rtsp://127.0.0.1:9111/mystream5"
-export CAM_URIS="rtsp://127.0.0.1:9111/mystream"
+export CAM_URIS="rtsp://192.168.1.12:9111/mystream"
 
 export CAM_IDS="cam_0"
 export CAM_IDS="cam_0,cam_1,cam_2,cam_3,cam_4"

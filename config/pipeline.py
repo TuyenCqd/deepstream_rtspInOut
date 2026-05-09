@@ -75,13 +75,13 @@ ELEMENTS = {
     "capsfilter": { 
         "factory_name": "capsfilter", 
         "properties": { 
-            # "caps": "video/x-raw(memory:NVMM), format=I420" # Để dạng String ở đây 
-            "caps": "video/x-raw, format=I420" 
+            "caps": "video/x-raw(memory:NVMM), format=I420" # Để dạng String ở đây 
+            # "caps": "video/x-raw, format=I420" 
             } 
         }, 
     "encoder": { 
-        # "factory_name": "nvv4l2h264enc", 
-        "factory_name": "avenc_h264", 
+        "factory_name": "nvv4l2h264enc", 
+        # "factory_name": "avenc_h264", 
         "properties": { 
             "bitrate": 4000000 
             # "preset-id": 1, 

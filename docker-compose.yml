@@ -13,12 +13,11 @@ services:
               count: all
               capabilities: [gpu]
     ports:
-      - "9112:9112"
-      - "9113:9113"
-      - "5400:5400/udp"
+      - "9112-9115:9112-9115"
+      - "5400-5405:5400-5405/udp"
 
     volumes:
-      # - .:/workspace
+      - .:/workspace
       - ../config:/workspace/root_config
       - ../alerts:/workspace/root_alerts 
       # Quan trọng: Tăng bộ nhớ ảo cho GPU (Shared Memory)

@@ -676,12 +676,12 @@ class Pipeline(BasePipeline):
     #     logger.info(f"RTSP Server live: rtsp://localhost:{rtsp_port}{path}") 
     
     def setup_rtsp(self, udp_port, rtsp_port, path):
-        # Gán vào self để server KHÔNG bị Python xóa
+        # CHÚ Ý: Phải dùng self.rtsp_server để tránh bị Python Garbage Collector xóa mất object
         self.rtsp_server = GstRtspServer.RTSPServer.new()
         self.rtsp_server.set_service(str(rtsp_port))
         
         factory = GstRtspServer.RTSPMediaFactory.new()
-        # Thêm -rtsp-tcp để VLC ổn định hơn qua Docker
+        # launch_cmd này dùng để nhận dữ liệu từ pipeline chính qua UDP
         launch_cmd = (
             f'( udpsrc name=pay0 port={udp_port} buffer-size=524288 '
             f'caps="application/x-rtp, media=(string)video, clock-rate=(int)90000, '
@@ -690,16 +690,24 @@ class Pipeline(BasePipeline):
         factory.set_launch(launch_cmd)
         factory.set_shared(True)
         
+        # Gắn factory vào server
         self.rtsp_server.get_mount_points().add_factory(path, factory)
+        
+        # Attach vào context mặc định để server bắt đầu lắng nghe
         self.rtsp_server.attach(None)
         
-        # Lấy IP thật để log cho chuẩn
+        # Lấy IP của container để log ra cho dễ copy link
         import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try: s.connect(("8.8.8.8", 80)); ip = s.getsockname()[0]; s.close()
-        except: ip = "127.0.0.1"
-        
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            ip = s.getsockname()[0]
+            s.close()
+        except:
+            ip = "container_ip"
+            
         logger.info(f"RTSP Server live: rtsp://{ip}:{rtsp_port}{path}")
+
 
 
     def run(self): 
@@ -715,6 +723,7 @@ class Pipeline(BasePipeline):
             # 2. Sau đó mới hạ pipeline về NULL 
             self.pipeline.set_state(Gst.State.NULL) 
             logger.info("Pipeline Stopped.") 
+
     # def run(self):
     #     logger.info("Starting Pipeline...")
         
