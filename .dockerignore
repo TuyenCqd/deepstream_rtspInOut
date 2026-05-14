@@ -1,0 +1,13 @@
+.env
+logs/
+data/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pt 
+*.data
+models/traffic_rtdetr/export_rtdetr_ultralytics.py
+.git
+.gitignore
+*.tar
+*.zip

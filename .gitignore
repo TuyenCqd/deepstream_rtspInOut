@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+*.engine
+*.plan
+*.onnx
+*.mp4
+*.jpg
+*.avi
+*.pth
+*.weights
+*.data
+*.whl
+*.tar
+
+data
+logs
+alerts
+alerts1
+root_alerts
+root_config
+models
+config
