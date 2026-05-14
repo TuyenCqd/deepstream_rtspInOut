@@ -1,0 +1,27 @@
+# 1. create setup.py with content:
+from setuptools import setup
+from Cython.Build import cythonize
+
+setup(
+    ext_modules=cythonize(
+        "pipeline.pyx",
+        compiler_directives={"language_level": "3"},
+    )
+)
+
+# 2. cp pipeline.py pipeline.pyx
+
+# 3.    pip install cython
+        python3 setup.py build_ext --inplace
+
+# 4 save image
+docker build -t cctv-ds-app:v1 .
+docker save -o cctv-ds-app.tar cctv-ds-app:v1
+# docker-compose.yml
+services:  
+  ds-management:
+    image: cctv-ds-app:v1  # Sử dụng image đã load từ file .tar
+    container_name: cctv_ds_mgmt
+
+docker load -i cctv-ds-app.tar
+docker compose up -d

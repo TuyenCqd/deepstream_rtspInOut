@@ -1,0 +1,41 @@
+docker run --rm -it --network=host -e MTX_RTSPADDRESS=:9111 bluenviron/mediamtx
+docker run --rm -it --network=host \
+  -e MTX_RTSPADDRESS=:9101 \
+  -e MTX_RTPADDRESS=:8002 \
+  -e MTX_RTCPADDRESS=:8003 \
+  -e MTX_RTMP=no \
+  -e MTX_HLS=no \
+  -e MTX_WEBRTC=no \
+  -e MTX_SRT=no \
+  bluenviron/mediamtx
+
+
+ffmpeg -re -stream_loop -1 -fflags +genpts -i data/853889-hd_1920_1080_25fps.mp4 -c:v libx264 -preset superfast -tune zerolatency -an -f rtsp rtsp://107.120.93.24:9111/mystream
+
+ffmpeg -re -stream_loop -1 -fflags +genpts -i data/data_sev1/"SEV_Fence_NW Gate In-Billboard_S06_9.32_2026-04-01 AM 09-50-55.avi" \
+-c:v libx264 -preset superfast -tune zerolatency \
+-b:v 3M -maxrate 3M -bufsize 6M \
+-payload_type 99 -pkt_size 1300 \
+-an -f rtsp -rtsp_transport tcp rtsp://107.120.93.24:9101/mystream
+
+ ffmpeg -re -stream_loop -1 -fflags +genpts -i data/data_sev/Dot\ nhap\ trai\ phep\ cong\ G3_nguoi\ di\ bo\ tu\ ngoai\ vao.avi -c:v libx264 -preset superfast -tune zerolatency -a
+n -f rtsp rtsp://107.120.93.24:9111/mystream
+
+
+
+-fflags +genpts: Ép tạo lại timestamp mới liên tục, không bị nhảy lùi khi loop.
+-c:v libx264 -preset superfast: Mã hóa lại nhanh để đảm bảo luồng timestamp mượt (nếu CPU cho phép). Nếu muốn giữ -c copy, hãy đảm bảo MediaMTX hoặc DeepStream tự bù timestamp.
+
+
+export CAM_URIS="rtsp://107.120.93.24:9111/mystream1,rtsp://107.120.93.24:9111/mystream2,rtsp://107.120.93.24:9111/mystream3,rtsp://107.120.93.24:9111/mystream4,rtsp://107.120.93.24:9111/mystream5"
+export CAM_URIS="rtsp://107.120.93.24:9111/mystream"
+
+export CAM_IDS="cam_0"
+export CAM_IDS="cam_0,cam_1,cam_2,cam_3,cam_4"
+
+python3 service/main.py --roi root_config/config_vung_gioi_han.txt --udpport 5400 --rtspport 9112 --pathrtsp /cam1
+python3 service/pipeline.py --line root_config/config_vach_gioi_han.txt --udpport 5401 --rtspport 9113 --pathrtsp /cam2
+python3 service/main.py --roi root_config/config_vung_gioi_han.txt 
+
+
+ffplay -rtsp_transport tcp rtsp://107.120.93.24:9112/ds-test

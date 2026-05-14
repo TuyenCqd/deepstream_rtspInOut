@@ -1,0 +1,29 @@
+services:  
+  ds-management:
+    build: .
+    container_name: cctv_ds_mgmt
+    tty: true                  
+    stdin_open: true          
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia   
+              count: all
+              capabilities: [gpu]
+    ports:
+      - "9112-9115:9112-9115"  
+      - "5400-5405:5400-5405/udp"
+    volumes:
+      - ../config:/workspace/root_config       
+      - ../alerts:/workspace/root_alerts
+      - .:/workspace
+    environment:
+      - PYTHONPATH=/workspace
+    working_dir: /workspace    
+
+    restart: unless-stopped
+
+networks:
+  cctv-ds:
+    driver: bridge
